@@ -1,6 +1,4 @@
-import json
 import requests
-import os
 
 # Function to execute a prompt with the GPT model
 def execute_gpt_model_prompt(api_key, model_name, prompt):
@@ -17,13 +15,12 @@ def execute_gpt_model_prompt(api_key, model_name, prompt):
 def execute_tts_model_prompt(api_key, text):
     headers = {"Authorization": f"Bearer {api_key}"}
     payload = {
-        "text": text,
+        "text": text
     }
-    # Assuming the TTS endpoint is similar to this (please adjust according to the actual API documentation)
     response = requests.post("https://api.openai.com/v1/tts", headers=headers, json=payload)
     return response.json()['audio_url']
 
-# Main function to handle integration
+# Main function to handle integration of AI models
 def handle_integration(api_key, primary_model, secondary_model):
     primary_prompt = "Your primary model prompt here"
     primary_response = execute_gpt_model_prompt(api_key, primary_model, primary_prompt)
@@ -34,12 +31,9 @@ def handle_integration(api_key, primary_model, secondary_model):
     print("TTS Audio URL:", tts_audio_url)
 
 if __name__ == "__main__":
-    api_key = os.getenv('OPENAI_API_KEY')
-    if not api_key:
-        print("API key is required to authenticate with OpenAI.")
-        exit(1)
-
-    primary_model = "gpt-4-0125-preview"  # Example GPT model
+    api_key = "your_openai_api_key"  # Replace with your actual API key
+    primary_model = "gpt-4-0125-preview"  # Placeholder for the GPT model name
     secondary_model = "tts-1-hd"  # Placeholder for the TTS model name
 
     handle_integration(api_key, primary_model, secondary_model)
+    
