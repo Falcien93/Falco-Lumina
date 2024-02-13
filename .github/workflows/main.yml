@@ -36,6 +36,9 @@ jobs:
 
       - name: Run Model Listing and Selection
         run: python Model_Listing_and_Selection.py
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
 
       - name: Run User Input Enhancement
         run: python User_Input_Enhancement.py
