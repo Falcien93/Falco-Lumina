@@ -49,6 +49,8 @@ jobs:
       - name: Run Advanced Interaction Features
         run: python Advanced_Interaction_Features.py
 
-      # Add other scripts as needed
-      # - name: Run Other Script
-      #   run: python your_script.py
+      - name: Run Integration Hub for AI Model Communication
+        run: python Integration_Hub_for_AI_Model_Communication.py
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
