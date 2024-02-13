@@ -1,16 +1,15 @@
-try:
-    import openai
-except ImportError:
-    print("The 'openai' module is not installed. Please install it using 'pip install openai'.")
-    exit()
+import os
+import openai
 
 def authenticate_with_openai():
-    api_key = input("Please enter your OpenAI API key: ").strip()
+    # Get the API key from the environment variable
+    api_key = os.getenv('OPENAI_API_KEY')
     if api_key:
+        openai.api_key = api_key
         print("Authentication successful.")
     else:
         print("API key is required to authenticate with OpenAI.")
-        exit()
+        exit(1)  # Exit with an error code
 
 if __name__ == "__main__":
     authenticate_with_openai()
