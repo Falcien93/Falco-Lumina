@@ -22,7 +22,7 @@ def list_and_select_gpt_model():
             print(f"{index}: {model.id}")  # Access attributes directly
 
         # Since we can't interactively select a model in GitHub Actions, you might want to select a default or use an environment variable for the model.
-        selected_model_index = int(os.getenv('SELECTED_MODEL_INDEX', '0'))  # Default to the first model if not specified
+        selected_model_index = int(os.getenv('SELECTED_MODEL_INDEX', '27'))  # Default to the first model if not specified
         selected_model = models[selected_model_index].id  # Access attributes directly
         print(f"You have selected: {selected_model}")
         return selected_model
