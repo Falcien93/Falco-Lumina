@@ -1,4 +1,15 @@
+import os
 from openai import OpenAI
+
+def list_and_select_gpt_model():
+    # Get the API key from an environment variable
+    api_key = os.getenv('OPENAI_API_KEY')
+    if not api_key:
+        print("API key is required to authenticate with OpenAI.")
+        exit(1)  # Exit with an error code if the API key is not found
+    
+    # Authenticate with the API key
+    openai.api_key = api_key
 
 def list_and_select_gpt_model(api_key):
     """
@@ -24,5 +35,4 @@ def list_and_select_gpt_model(api_key):
         print(f"An error occurred while listing models: {e}")
 
 if __name__ == "__main__":
-    api_key = input("Please enter your OpenAI API key: ").strip()
-    list_and_select_gpt_model(api_key)
+    list_and_select_gpt_model()
