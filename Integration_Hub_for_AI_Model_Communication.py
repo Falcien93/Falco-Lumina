@@ -1,15 +1,6 @@
 import json
 import requests
-
-# Placeholder for the functionality of other scripts
-def authenticate_with_openai():
-    return "openai_api_key"
-
-def list_available_models(api_key):
-    return ["text-davinci-003", "text-curie-001"]
-
-def select_model(api_key, model_name):
-    print(f"Model {model_name} selected.")
+import os
 
 def execute_model_prompt(api_key, model_name, prompt):
     response = requests.post(
@@ -20,27 +11,26 @@ def execute_model_prompt(api_key, model_name, prompt):
     return response.json()
 
 def integrate_model_responses(primary_response, secondary_responses):
-    # This is a simplistic way to combine insights from different models.
-    # More sophisticated methods might be needed for complex integrations.
     combined_insight = f"{primary_response}\n\n{' '.join(secondary_responses)}"
     return combined_insight
 
-def handle_slash_commands(command, api_key):
-    if command.startswith("/integrate"):
-        _, primary_model, *secondary_models = command.split()
-        primary_response = execute_model_prompt(api_key, primary_model, "Primary model prompt")
-        
-        secondary_responses = []
-        for model in secondary_models:
-            response = execute_model_prompt(api_key, model, "Secondary model prompt")
-            secondary_responses.append(response)
-        
-        final_response = integrate_model_responses(primary_response, secondary_responses)
-        print("Integrated Model Response:", final_response)
-    else:
-        print("Unknown command. Type /help for a list of commands.")
+def handle_integration(api_key, primary_model, secondary_models):
+    primary_response = execute_model_prompt(api_key, primary_model, "Primary model prompt")
+    secondary_responses = [
+        execute_model_prompt(api_key, model, "Secondary model prompt")['choices'][0]['text']
+        for model in secondary_models
+    ]
+    final_response = integrate_model_responses(primary_response['choices'][0]['text'], secondary_responses)
+    print("Integrated Model Response:", final_response)
 
 if __name__ == "__main__":
-    api_key = authenticate_with_openai()
-    command = "/integrate text-davinci-003 text-curie-001"
-    handle_slash_commands(command, api_key)
+    api_key = os.getenv('OPENAI_API_KEY')
+    if not api_key:
+        print("API key is required to authenticate with OpenAI.")
+        exit(1)
+
+    # Example models to integrate. These should be set up according to your needs.
+    primary_model = "gpt-4-0125-preview"
+    secondary_models = ["tts-1-hd"]
+
+    handle_integration(api_key, primary_model, secondary_models)
