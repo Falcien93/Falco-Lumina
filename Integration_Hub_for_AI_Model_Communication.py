@@ -1,39 +1,36 @@
-import requests
+import os
+import openai
 
-# Function to execute a prompt with the GPT model
-def execute_gpt_model_prompt(api_key, model_name, prompt):
-    headers = {"Authorization": f"Bearer {api_key}"}
-    payload = {
-        "model": model_name,
-        "prompt": prompt,
-        "max_tokens": 100
-    }
-    response = requests.post("https://api.openai.com/v1/completions", headers=headers, json=payload)
-    return response.json()['choices'][0]['text']
-
-# Function to execute a prompt with the TTS model
-def execute_tts_model_prompt(api_key, text):
-    headers = {"Authorization": f"Bearer {api_key}"}
-    payload = {
-        "text": text
-    }
-    response = requests.post("https://api.openai.com/v1/tts", headers=headers, json=payload)
-    return response.json()['audio_url']
-
-# Main function to handle integration of AI models
-def handle_integration(api_key, primary_model, secondary_model):
-    primary_prompt = "Your primary model prompt here"
-    primary_response = execute_gpt_model_prompt(api_key, primary_model, primary_prompt)
-    print("Primary Model Response:", primary_response)
-
-    # Assuming the primary response is suitable as input to the TTS model
-    tts_audio_url = execute_tts_model_prompt(api_key, primary_response)
-    print("TTS Audio URL:", tts_audio_url)
+def generate_speech_from_text(api_key, text, model="tts-1-hd", voice="alloy"):
+    """
+    Generate spoken audio from text using OpenAI's Text-to-Speech API.
+    :param api_key: Your OpenAI API key.
+    :param text: The text to convert to speech.
+    :param model: The TTS model to use. Defaults to "tts-1-hd" for high quality.
+    :param voice: The voice to use for the audio. Defaults to "alloy".
+    """
+    openai.api_key = api_key
+    try:
+        response = openai.Audio.create(
+            model=model,
+            input=text,
+            voice=voice,
+            response_format="mp3"
+        )
+        # Assuming the response contains a URL to the generated audio file
+        audio_url = response['data']['url']
+        print(f"Generated audio URL: {audio_url}")
+    except Exception as e:
+        print(f"An error occurred while generating speech: {e}")
 
 if __name__ == "__main__":
-    api_key = "your_openai_api_key"  # Replace with your actual API key
-    primary_model = "gpt-4-0125-preview"  # Placeholder for the GPT model name
-    secondary_model = "tts-1-hd"  # Placeholder for the TTS model name
-
-    handle_integration(api_key, primary_model, secondary_model)
+    api_key = os.getenv('OPENAI_API_KEY')
+    if not api_key:
+        print("API key is required to authenticate with OpenAI.")
+        exit(1)
     
+    # Example text to convert to speech
+    text_to_speech = "This is a sample text to convert into spoken audio using OpenAI's Text-to-Speech API."
+    
+    generate_speech_from_text(api_key, text_to_speech)
+
